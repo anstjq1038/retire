@@ -1,12 +1,12 @@
 import { NavLink, useNavigate } from "react-router-dom";
 
+// 5칸 대칭 구조 — 가운데 칸(+)이 화면 정중앙에 온다. 설정은 홈 헤더 ⚙️로 이동.
 const tabs = [
   { to: "/", label: "홈", icon: "🏠" },
   { to: "/portfolio", label: "자산", icon: "📊" },
   { to: "__record", label: "", icon: "" }, // 가운데 + 버튼 자리
   { to: "/insights", label: "분석", icon: "📈" },
   { to: "/goal", label: "목표", icon: "⛰️" },
-  { to: "/settings", label: "설정", icon: "⚙️" },
 ];
 
 export default function TabBar() {
@@ -16,7 +16,7 @@ export default function TabBar() {
       className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-md border-t border-[var(--hairline)] bg-[var(--card)]/95 backdrop-blur"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="relative grid grid-cols-6">
+      <div className="relative grid grid-cols-5">
         {tabs.map((t) =>
           t.to === "__record" ? (
             <div key={t.to} className="relative">

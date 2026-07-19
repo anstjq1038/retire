@@ -26,9 +26,12 @@ export default function Home() {
 
   return (
     <Page>
-      <header className="mb-4 mt-2 flex items-baseline justify-between">
+      <header className="mb-4 mt-2 flex items-center justify-between">
         <h1 className="text-lg font-extrabold">🌱 적립</h1>
-        <span className="text-xs text-[var(--ink3)]">은퇴까지 {retireDays.toLocaleString()}일</span>
+        <div className="flex items-center gap-2.5">
+          <span className="text-xs text-[var(--ink3)]">은퇴까지 {retireDays.toLocaleString()}일</span>
+          <Link to="/settings" aria-label="설정" className="press text-base">⚙️</Link>
+        </div>
       </header>
 
       {/* 총 자산 히어로 */}
