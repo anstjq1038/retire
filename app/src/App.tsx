@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Portfolio from "./pages/Portfolio";
 import StockDetail from "./pages/StockDetail";
 import Record from "./pages/Record";
+import Insights from "./pages/Insights";
 import Goal from "./pages/Goal";
 import SettingsPage from "./pages/Settings";
 import Login from "./pages/Login";
@@ -29,6 +30,7 @@ function Shell() {
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/portfolio/:id" element={<StockDetail />} />
             <Route path="/record" element={<Record />} />
+            <Route path="/insights" element={<Insights />} />
             <Route path="/goal" element={<Goal />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Routes>

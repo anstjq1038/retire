@@ -1,21 +1,17 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import { useDark } from "../../hooks/useDark";
-import { seriesColor } from "../../lib/palette";
 import { fmtEok } from "../../lib/calc";
-import type { Holding } from "../../lib/calc";
 
-/** 종목 비중 도넛 + 범례 리스트 */
-export default function DonutChart({ holdings }: { holdings: Holding[] }) {
-  const dark = useDark();
-  const owned = holdings.filter((h) => h.qty > 0);
-  const total = owned.reduce((s, h) => s + h.value, 0);
-  if (owned.length === 0 || total === 0) return null;
-  const data = owned.map((h) => ({
-    id: h.stock.id,
-    name: h.stock.name,
-    value: h.value,
-    color: seriesColor(h.stock.colorIdx, dark),
-  }));
+export type Slice = { id: string; name: string; value: number; color: string };
+
+/** 자산 비중 도넛 + 범례 리스트 (종목·현금 공용) */
+export default function DonutChart({
+  slices, centerLabel = "평가금액",
+}: {
+  slices: Slice[]; centerLabel?: string;
+}) {
+  const data = slices.filter((s) => s.value > 0);
+  const total = data.reduce((s, d) => s + d.value, 0);
+  if (data.length === 0 || total === 0) return null;
 
   return (
     <div className="flex items-center gap-4">
@@ -43,7 +39,7 @@ export default function DonutChart({ holdings }: { holdings: Holding[] }) {
           </PieChart>
         </ResponsiveContainer>
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-[10px] text-[var(--ink3)]">평가금액</span>
+          <span className="text-[10px] text-[var(--ink3)]">{centerLabel}</span>
           <span className="text-sm font-bold">{fmtEok(total)}</span>
         </div>
       </div>

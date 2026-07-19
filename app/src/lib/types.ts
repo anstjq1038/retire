@@ -22,6 +22,9 @@ export type Settings = {
   buyDay: number; // 매월 매수일
   monthlyBudget: number; // 월 적립 목표액 (시뮬레이터 기본값)
   annualReturn: number; // 연 기대수익률 %
+  cashKrw: number; // 보유 현금 (원화)
+  cashUsd: number; // 보유 현금 (달러)
+  usdRate: number; // 달러 환산 환율 (수동)
 };
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -30,6 +33,9 @@ export const DEFAULT_SETTINGS: Settings = {
   buyDay: 25,
   monthlyBudget: 1_000_000,
   annualReturn: 7,
+  cashKrw: 0,
+  cashUsd: 0,
+  usdRate: 1400,
 };
 
 export const DEFAULT_STOCK_NAMES = [

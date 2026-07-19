@@ -43,8 +43,17 @@ export function computeHoldings(stocks: Stock[], buys: Buy[]): Holding[] {
   });
 }
 
-/** 월별 종목별 누적 투입원금 (스택 영역 차트용). rows: {ym, [stockId]: 누적원금} */
-export function monthlyCumulative(stocks: Stock[], buys: Buy[]) {
+/** 현금 자산 원화 환산 총액 */
+export function cashTotal(s: { cashKrw?: number; cashUsd?: number; usdRate?: number }): number {
+  return (s.cashKrw ?? 0) + (s.cashUsd ?? 0) * (s.usdRate ?? 1400);
+}
+
+/** 월별 종목별 누적값 (스택 영역 차트용). mode: 투입원금 | 보유수량 */
+export function monthlyCumulative(
+  stocks: Stock[],
+  buys: Buy[],
+  mode: "amount" | "qty" = "amount",
+) {
   if (buys.length === 0) return [] as Array<Record<string, number | string>>;
   const months: string[] = [];
   const first = buys.map((b) => ymOf(b.date)).sort()[0];
@@ -60,7 +69,9 @@ export function monthlyCumulative(stocks: Stock[], buys: Buy[]) {
   }
   const cum: Record<string, number> = {};
   return months.map((ym) => {
-    for (const b of buys) if (ymOf(b.date) === ym) cum[b.stockId] = (cum[b.stockId] ?? 0) + b.qty * b.price;
+    for (const b of buys)
+      if (ymOf(b.date) === ym)
+        cum[b.stockId] = (cum[b.stockId] ?? 0) + (mode === "qty" ? b.qty : b.qty * b.price);
     const row: Record<string, number | string> = { ym };
     for (const s of stocks) row[s.id] = cum[s.id] ?? 0;
     return row;

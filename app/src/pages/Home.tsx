@@ -4,17 +4,18 @@ import AnimatedNumber from "../components/AnimatedNumber";
 import AccumChart from "../components/charts/AccumChart";
 import { useStore } from "../lib/store";
 import {
-  boughtInMonth, computeHoldings, daysUntil, fmtEok, fmtWon,
-  monthsUntil, nextBuyInfo, streakMonths, todayStr, ymOf,
+  boughtInMonth, cashTotal, computeHoldings, daysUntil, fmtEok, fmtNum,
+  fmtWon, nextBuyInfo, streakMonths, todayStr, ymOf,
 } from "../lib/calc";
 
 export default function Home() {
   const { stocks, buys, settings } = useStore();
   const nav = useNavigate();
   const holdings = computeHoldings(stocks, buys);
-  const totalValue = holdings.reduce((s, h) => s + h.value, 0);
-  const totalInvested = holdings.reduce((s, h) => s + h.invested, 0);
-  const profit = totalValue - totalInvested;
+  const stockValue = holdings.reduce((s, h) => s + h.value, 0);
+  const cash = cashTotal(settings);
+  const totalValue = stockValue + cash;
+  const totalQty = holdings.reduce((s, h) => s + h.qty, 0);
   const pct = Math.min(100, (totalValue / settings.goal) * 100);
 
   const curYm = ymOf(todayStr());
@@ -22,7 +23,6 @@ export default function Home() {
   const { dday } = nextBuyInfo(settings.buyDay);
   const streak = streakMonths(buys);
   const retireDays = daysUntil(settings.retireDate);
-  const retireMonths = monthsUntil(settings.retireDate);
 
   return (
     <Page>
@@ -31,19 +31,15 @@ export default function Home() {
         <span className="text-xs text-[var(--ink3)]">은퇴까지 {retireDays.toLocaleString()}일</span>
       </header>
 
-      {/* 총 평가금액 히어로 */}
+      {/* 총 자산 히어로 */}
       <section className="card px-5 py-6">
-        <p className="text-xs text-[var(--ink3)]">총 평가금액</p>
+        <p className="text-xs text-[var(--ink3)]">총 자산</p>
         <p className="mt-1 text-[34px] font-extrabold leading-tight tracking-tight">
           <AnimatedNumber value={totalValue} format={fmtWon} />
         </p>
         <p className="mt-1 text-xs text-[var(--ink2)]">
-          원금 {fmtEok(totalInvested)}
-          {profit !== 0 && (
-            <span className={profit > 0 ? "text-[var(--good)]" : "text-[#d03b3b]"}>
-              {" "}· {profit > 0 ? "+" : ""}{fmtEok(profit)}
-            </span>
-          )}
+          주식 {fmtEok(stockValue)}
+          {cash > 0 && <> · 현금 {fmtEok(cash)}</>}
         </p>
         {/* 목표 진행률 */}
         <div className="mt-4">
@@ -100,11 +96,11 @@ export default function Home() {
         )}
       </section>
 
-      {/* 은퇴 카드 */}
+      {/* 보유 현황 카드 */}
       <section className="mt-3 grid grid-cols-2 gap-3">
         <div className="card px-4 py-3.5">
-          <p className="text-[11px] text-[var(--ink3)]">남은 매수 기회</p>
-          <p className="mt-0.5 text-xl font-extrabold">{retireMonths}번</p>
+          <p className="text-[11px] text-[var(--ink3)]">총 보유수량</p>
+          <p className="mt-0.5 text-xl font-extrabold">{fmtNum(totalQty)}주</p>
         </div>
         <div className="card px-4 py-3.5">
           <p className="text-[11px] text-[var(--ink3)]">보유 종목</p>
@@ -114,11 +110,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 누적 차트 */}
+      {/* 수량 누적 차트 */}
       <section className="card mt-3 px-4 py-4">
         <div className="mb-2 flex items-baseline justify-between">
-          <h2 className="text-sm font-bold">쌓인 원금</h2>
-          <Link to="/portfolio" className="text-[11px] text-[var(--accent)]">포트폴리오 →</Link>
+          <h2 className="text-sm font-bold">쌓인 수량 🧱</h2>
+          <Link to="/insights" className="text-[11px] text-[var(--accent)]">분석 →</Link>
         </div>
         {buys.length === 0 ? (
           <div className="py-8 text-center text-sm text-[var(--ink3)]">
@@ -128,7 +124,7 @@ export default function Home() {
             </button>
           </div>
         ) : (
-          <AccumChart stocks={stocks} buys={buys} />
+          <AccumChart stocks={stocks} buys={buys} mode="qty" />
         )}
       </section>
     </Page>

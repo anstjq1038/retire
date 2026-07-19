@@ -20,6 +20,7 @@ type Store = {
   updateStock: (id: string, patch: Partial<Stock>) => Promise<void>;
   deleteStock: (id: string) => Promise<void>;
   addBuy: (b: Omit<Buy, "id" | "createdAt">) => Promise<void>;
+  updateBuy: (id: string, patch: Partial<Buy>) => Promise<void>;
   deleteBuy: (id: string) => Promise<void>;
   saveSettings: (patch: Partial<Settings>) => Promise<void>;
   seedDefaults: () => Promise<void>;
@@ -89,6 +90,9 @@ export function StoreProvider({ user, children }: { user: User; children: ReactN
     async addBuy(b) {
       const id = newId();
       await setDoc(doc(db, `${base}/buys/${id}`), { ...b, createdAt: Date.now() });
+    },
+    async updateBuy(id, patch) {
+      await updateDoc(doc(db, `${base}/buys/${id}`), patch as Record<string, unknown>);
     },
     async deleteBuy(id) {
       await deleteDoc(doc(db, `${base}/buys/${id}`));

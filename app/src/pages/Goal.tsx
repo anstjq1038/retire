@@ -2,7 +2,7 @@ import { useState } from "react";
 import Page from "../components/Page";
 import { useStore } from "../lib/store";
 import {
-  computeHoldings, fmtEok, futureValue, monthlyInvestMap, monthsUntil,
+  cashTotal, computeHoldings, fmtEok, futureValue, monthlyInvestMap, monthsUntil,
 } from "../lib/calc";
 
 const MILESTONES = [1e8, 3e8, 5e8, 1e9, 1.5e9];
@@ -10,7 +10,7 @@ const MILESTONES = [1e8, 3e8, 5e8, 1e9, 1.5e9];
 export default function Goal() {
   const { stocks, buys, settings } = useStore();
   const holdings = computeHoldings(stocks, buys);
-  const totalValue = holdings.reduce((s, h) => s + h.value, 0);
+  const totalValue = holdings.reduce((s, h) => s + h.value, 0) + cashTotal(settings);
 
   const [monthly, setMonthly] = useState(settings.monthlyBudget);
   const [ret, setRet] = useState(settings.annualReturn);
@@ -93,7 +93,7 @@ export default function Goal() {
         <label className="mt-3 block text-xs text-[var(--ink2)]">
           연 기대수익률 <b className="text-[var(--ink)]">{ret}%</b>
           <input
-            type="range" min={0} max={15} step={0.5}
+            type="range" min={0} max={50} step={0.5}
             value={ret} onChange={(e) => setRet(Number(e.target.value))}
             className="mt-1 w-full accent-[var(--accent)]"
           />

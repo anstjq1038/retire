@@ -3,13 +3,18 @@ import {
 } from "recharts";
 import { useDark } from "../../hooks/useDark";
 import { seriesColor } from "../../lib/palette";
-import { fmtEok, monthlyCumulative } from "../../lib/calc";
+import { fmtEok, fmtNum, monthlyCumulative } from "../../lib/calc";
 import type { Buy, Stock } from "../../lib/types";
 
-/** 월별 누적 투입원금 스택 영역 차트 */
-export default function AccumChart({ stocks, buys }: { stocks: Stock[]; buys: Buy[] }) {
+/** 월별 누적 스택 영역 차트 — mode: 투입원금(amount) | 보유수량(qty) */
+export default function AccumChart({
+  stocks, buys, mode = "amount",
+}: {
+  stocks: Stock[]; buys: Buy[]; mode?: "amount" | "qty";
+}) {
   const dark = useDark();
-  const data = monthlyCumulative(stocks, buys);
+  const fmt = mode === "qty" ? (n: number) => fmtNum(n) + "주" : fmtEok;
+  const data = monthlyCumulative(stocks, buys, mode);
   if (data.length === 0) return null;
   const active = stocks.filter((s) => buys.some((b) => b.stockId === s.id));
   const tickGap = Math.max(1, Math.ceil(data.length / 6));
@@ -36,13 +41,13 @@ export default function AccumChart({ stocks, buys }: { stocks: Stock[]; buys: Bu
               return (
                 <div className="card px-3 py-2 text-xs shadow-lg">
                   <div className="mb-1 font-bold">
-                    {String(label).replace("-", "년 ")}월 · {fmtEok(total)}
+                    {String(label).replace("-", "년 ")}월 · {fmt(total)}
                   </div>
                   {[...payload].reverse().map((p) => (
                     <div key={p.dataKey as string} className="flex items-center gap-1.5 text-[var(--ink2)]">
                       <span className="h-2 w-2 rounded-full" style={{ background: p.color }} />
                       {stocks.find((s) => s.id === p.dataKey)?.name}
-                      <span className="ml-auto pl-3 font-medium tabular-nums">{fmtEok(Number(p.value) || 0)}</span>
+                      <span className="ml-auto pl-3 font-medium tabular-nums">{fmt(Number(p.value) || 0)}</span>
                     </div>
                   ))}
                 </div>
