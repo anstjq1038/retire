@@ -54,8 +54,8 @@ export default function StockDetail() {
   const saveBuy = async () => {
     if (!editBuyId) return;
     const qty = Number(eQty.replaceAll(",", ""));
-    const price = Number(ePrice.replaceAll(",", ""));
-    if (qty > 0 && price > 0 && eDate) {
+    const price = Number(ePrice.replaceAll(",", "")) || 0; // 단가는 선택
+    if (qty > 0 && eDate) {
       await updateBuy(editBuyId, { date: eDate, qty, price });
     }
     setEditBuyId(null);
@@ -186,7 +186,9 @@ export default function StockDetail() {
                   <button onClick={() => startEditBuy(b.id)} className="press flex min-w-0 flex-1 items-center gap-2 text-left">
                     <span className="text-xs text-[var(--ink3)]">{b.date}</span>
                     <span className="ml-auto font-bold tabular-nums">{fmtNum(b.qty)}주</span>
-                    <span className="text-xs text-[var(--ink2)] tabular-nums">@{fmtNum(b.price)}</span>
+                    <span className="text-xs text-[var(--ink2)] tabular-nums">
+                      {b.price > 0 ? `@${fmtNum(b.price)}` : "단가 없음"}
+                    </span>
                   </button>
                   <button
                     onClick={() => { if (confirm("이 매수 기록을 삭제할까요?")) deleteBuy(b.id); }}

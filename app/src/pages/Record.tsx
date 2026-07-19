@@ -29,8 +29,8 @@ export default function Record() {
 
   const selected = stocks.find((s) => s.id === stockId) ?? stocks[0];
   const qtyN = Number(qty.replaceAll(",", ""));
-  const priceN = Number(price.replaceAll(",", ""));
-  const valid = !!selected && qtyN > 0 && priceN > 0 && !!date;
+  const priceN = Number(price.replaceAll(",", "")) || 0; // 단가는 선택 입력
+  const valid = !!selected && qtyN > 0 && !!date;
 
   const save = async () => {
     if (!valid || !selected) return;
@@ -133,7 +133,9 @@ export default function Record() {
         </label>
         <div className="h-px bg-[var(--hairline)]" />
         <label className="block">
-          <span className="text-xs font-bold text-[var(--ink2)]">1주 매수단가 (원)</span>
+          <span className="text-xs font-bold text-[var(--ink2)]">
+            1주 매수단가 (원) <span className="font-normal text-[var(--ink3)]">· 선택 — 모르면 비워두세요</span>
+          </span>
           <input
             inputMode="numeric" value={price}
             onChange={(e) => setPrice(e.target.value)}
@@ -154,7 +156,8 @@ export default function Record() {
 
       {valid && (
         <p className="mt-3 text-center text-xs text-[var(--ink2)]">
-          {selected?.name} {qtyN.toLocaleString()}주 · 총 <b>{fmtWon(qtyN * priceN)}</b>
+          {selected?.name} {qtyN.toLocaleString()}주
+          {priceN > 0 && <> · 총 <b>{fmtWon(qtyN * priceN)}</b></>}
         </p>
       )}
 

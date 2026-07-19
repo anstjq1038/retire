@@ -33,8 +33,11 @@ export function computeHoldings(stocks: Stock[], buys: Buy[]): Holding[] {
   return stocks.map((stock) => {
     const mine = buys.filter((b) => b.stockId === stock.id);
     const qty = mine.reduce((s, b) => s + b.qty, 0);
-    const invested = mine.reduce((s, b) => s + b.qty * b.price, 0);
-    const avgPrice = qty > 0 ? invested / qty : 0;
+    // 단가 없이(0) 수량만 기록한 매수는 평단·원금 계산에서 제외
+    const priced = mine.filter((b) => b.price > 0);
+    const invested = priced.reduce((s, b) => s + b.qty * b.price, 0);
+    const pricedQty = priced.reduce((s, b) => s + b.qty, 0);
+    const avgPrice = pricedQty > 0 ? invested / pricedQty : 0;
     const value = qty > 0 ? qty * (stock.currentPrice ?? avgPrice) : 0;
     const lastBuyDate = mine.length
       ? mine.map((b) => b.date).sort().at(-1)
