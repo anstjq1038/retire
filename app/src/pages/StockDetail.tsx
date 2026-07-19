@@ -11,10 +11,11 @@ export default function StockDetail() {
   const { id } = useParams<{ id: string }>();
   const nav = useNavigate();
   const dark = useDark();
-  const { stocks, buys, updateStock, deleteStock, updateBuy, deleteBuy } = useStore();
+  const { stocks, buys, updateStock, deleteStock, updateBuy, deleteBuy, pricesUpdatedAt } = useStore();
   const stock = stocks.find((s) => s.id === id);
 
   const [priceInput, setPriceInput] = useState("");
+  const [codeInput, setCodeInput] = useState("");
   const [renaming, setRenaming] = useState(false);
   const [nameInput, setNameInput] = useState("");
   const [editBuyId, setEditBuyId] = useState<string | null>(null);
@@ -116,27 +117,65 @@ export default function StockDetail() {
         </div>
       </section>
 
-      {/* 현재가 수동 갱신 */}
-      <section className="card mt-3 flex items-center gap-2 px-4 py-3">
-        <div className="min-w-0 flex-1">
-          <p className="text-[11px] text-[var(--ink3)]">
-            현재가 {stock.currentPrice ? `· ${fmtWon(stock.currentPrice)}` : "(미설정 — 평단가로 평가)"}
+      {/* 현재가 — 자동 시세 또는 수동 갱신 */}
+      {stock.live ? (
+        <section className="card mt-3 px-4 py-3">
+          <p className="text-[11px] text-[var(--ink3)]">현재가</p>
+          <p className="mt-0.5 flex items-baseline gap-2 text-sm font-bold">
+            {fmtWon(stock.currentPrice ?? 0)}
+            <span className="text-[10px] font-normal text-[var(--good)]">
+              ● 자동 시세
+              {pricesUpdatedAt &&
+                ` · ${new Date(pricesUpdatedAt).toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })} 기준`}
+            </span>
           </p>
-          <input
-            inputMode="numeric"
-            placeholder="현재가 입력"
-            value={priceInput}
-            onChange={(e) => setPriceInput(e.target.value)}
-            className="mt-0.5 w-full bg-transparent text-sm font-bold outline-none placeholder:text-[var(--ink3)]"
-          />
-        </div>
-        <button
-          onClick={savePrice}
-          className="press shrink-0 rounded-xl bg-[var(--accent)] px-4 py-2 text-xs font-bold text-white"
-        >
-          갱신
-        </button>
-      </section>
+        </section>
+      ) : (
+        <>
+          <section className="card mt-3 flex items-center gap-2 px-4 py-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] text-[var(--ink3)]">
+                현재가 {stock.currentPrice ? `· ${fmtWon(stock.currentPrice)}` : "(미설정 — 평단가로 평가)"}
+              </p>
+              <input
+                inputMode="numeric"
+                placeholder="현재가 입력"
+                value={priceInput}
+                onChange={(e) => setPriceInput(e.target.value)}
+                className="mt-0.5 w-full bg-transparent text-sm font-bold outline-none placeholder:text-[var(--ink3)]"
+              />
+            </div>
+            <button
+              onClick={savePrice}
+              className="press shrink-0 rounded-xl bg-[var(--accent)] px-4 py-2 text-xs font-bold text-white"
+            >
+              갱신
+            </button>
+          </section>
+          <section className="card mt-3 flex items-center gap-2 px-4 py-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] text-[var(--ink3)]">
+                종목코드{stock.code ? ` · ${stock.code}` : " (자동 시세 매칭용)"}
+              </p>
+              <input
+                placeholder="예: 379810"
+                value={codeInput}
+                onChange={(e) => setCodeInput(e.target.value)}
+                className="mt-0.5 w-full bg-transparent text-sm font-bold outline-none placeholder:text-[var(--ink3)]"
+              />
+            </div>
+            <button
+              onClick={async () => {
+                const c = codeInput.trim();
+                if (c) { await updateStock(stock.id, { code: c }); setCodeInput(""); }
+              }}
+              className="press shrink-0 rounded-xl bg-[var(--card2)] px-4 py-2 text-xs font-bold text-[var(--ink2)]"
+            >
+              저장
+            </button>
+          </section>
+        </>
+      )}
 
       {steps.length > 0 && (
         <section className="card mt-3 px-4 py-4">

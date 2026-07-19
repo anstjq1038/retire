@@ -8,7 +8,7 @@ import { useStore } from "../lib/store";
 import { cashTotal, computeHoldings, fmtEok, fmtNum, fmtWon } from "../lib/calc";
 
 export default function Portfolio() {
-  const { stocks, buys, settings, saveSettings, seedDefaults } = useStore();
+  const { stocks, buys, settings, saveSettings, seedDefaults, pricesUpdatedAt } = useStore();
   const dark = useDark();
   const nav = useNavigate();
   const holdings = computeHoldings(stocks, buys);
@@ -53,7 +53,13 @@ export default function Portfolio() {
     <Page>
       <div className="mb-4 mt-2 flex items-baseline justify-between">
         <h1 className="text-lg font-extrabold">포트폴리오</h1>
-        <Link to="/insights" className="text-[11px] font-bold text-[var(--accent)]">분석 📈</Link>
+        {pricesUpdatedAt ? (
+          <span className="text-[10px] text-[var(--ink3)]">
+            시세 {new Date(pricesUpdatedAt).toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })} 기준
+          </span>
+        ) : (
+          <Link to="/insights" className="text-[11px] font-bold text-[var(--accent)]">분석 📈</Link>
+        )}
       </div>
 
       {stocks.length === 0 ? (

@@ -21,7 +21,10 @@
 | `app/src/lib/store.tsx` | Firestore 실시간 동기화 (`retirement/{uid}/...`) |
 | `app/src/lib/calc.ts` | 평단가·D-day·스트릭·복리 시뮬레이션 계산 |
 | `tools/make-icons.mjs` | PWA 아이콘 생성 (`node tools/make-icons.mjs`) |
+| `tools/fetch-prices.mjs` | 네이버 금융 시세 수집 → `prices.json` |
+| `tickers.json` | 자동 시세 대상 종목코드 목록 (새 종목은 여기에 코드 추가) |
 | `.github/workflows/deploy.yml` | push하면 GitHub Pages 자동 배포 |
+| `.github/workflows/prices.yml` | 장중(KST 09:00~15:30) 30분마다 시세 갱신 커밋 |
 
 - **데이터**: 여행플래너와 같은 Firebase 프로젝트(travelplanner-a4a1c)의 Firestore를 재사용.
   `retirement/{uid}` 경로는 본인 계정만 읽기/쓰기 가능 (규칙은 여행플래너 저장소의 `firestore.rules`에서 관리·배포).

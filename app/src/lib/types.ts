@@ -2,8 +2,10 @@ export type Stock = {
   id: string;
   name: string;
   ticker?: string;
+  code?: string; // KRX 종목코드 — 자동 시세 매칭용
   colorIdx: number;
   currentPrice?: number; // 수동 갱신 현재가 (없으면 평단가로 평가)
+  live?: boolean; // 자동 시세가 반영된 상태 (저장 안 함, 런타임 전용)
   createdAt: number;
 };
 
@@ -38,10 +40,10 @@ export const DEFAULT_SETTINGS: Settings = {
   usdRate: 1400,
 };
 
-export const DEFAULT_STOCK_NAMES = [
-  "TIGER 구글밸류체인",
-  "SOL 미국양자컴퓨팅TOP10",
-  "KIWOOM 미국우주데이터센터인프라",
-  "KODEX 미국나스닥100",
-  "HANARO 미국AI메모리반도체TOP4+",
+export const DEFAULT_STOCKS: Array<{ name: string; code: string }> = [
+  { name: "TIGER 구글밸류체인", code: "0190Y0" },
+  { name: "SOL 미국양자컴퓨팅TOP10", code: "0023A0" },
+  { name: "KIWOOM 미국우주데이터센터인프라", code: "0207Z0" },
+  { name: "KODEX 미국나스닥100", code: "379810" },
+  { name: "HANARO 미국AI메모리반도체TOP4+", code: "0181B0" },
 ];

@@ -1,0 +1,31 @@
+name: Update prices
+
+on:
+  schedule:
+    # KRX 장중(KST 09:00~15:30, UTC 00:00~06:30) 30분마다 + 마감 후 한 번
+    - cron: "*/30 0-6 * * 1-5"
+    - cron: "45 6 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prices
+  cancel-in-progress: true
+
+jobs:
+  prices:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node tools/fetch-prices.mjs
+      - name: Commit if changed
+        run: |
+          git config user.name "price-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add prices.json
+          git diff --cached --quiet || { git commit -m "시세 갱신 [skip ci]"; git push; }
