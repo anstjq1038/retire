@@ -1,20 +1,20 @@
 {
-  "updatedAt": "2026-08-04T06:11:56.135Z",
+  "updatedAt": "2026-08-04T09:22:57.906Z",
   "items": [
     {
       "code": "0190Y0",
       "name": "TIGER 구글밸류체인",
-      "price": 9095
+      "price": 9125
     },
     {
       "code": "0023A0",
       "name": "SOL 미국양자컴퓨팅TOP10",
-      "price": 25895
+      "price": 25905
     },
     {
       "code": "0207Z0",
       "name": "KIWOOM 미국우주데이터센터인프라",
-      "price": 7185
+      "price": 7180
     },
     {
       "code": "379810",
@@ -24,12 +24,12 @@
     {
       "code": "0181B0",
       "name": "HANARO 미국AI메모리반도체TOP4+",
-      "price": 9805
+      "price": 9880
     },
     {
       "code": "0173Y0",
       "name": "KODEX 미국AI광통신네트워크",
-      "price": 11372
+      "price": 11345
     },
     {
       "code": "0118S0",
