@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-11T05:36:54.599Z",
+  "updatedAt": "2026-08-11T07:17:56.057Z",
   "items": [
     {
       "code": "0190Y0",
@@ -9,32 +9,32 @@
     {
       "code": "0023A0",
       "name": "SOL 미국양자컴퓨팅TOP10",
-      "price": 26100
+      "price": 26120
     },
     {
       "code": "0207Z0",
       "name": "KIWOOM 미국우주데이터센터인프라",
-      "price": 7385
+      "price": 7375
     },
     {
       "code": "379810",
       "name": "KODEX 미국나스닥100",
-      "price": 27815
+      "price": 27790
     },
     {
       "code": "0181B0",
       "name": "HANARO 미국AI메모리반도체TOP4+",
-      "price": 9460
+      "price": 9435
     },
     {
       "code": "0173Y0",
       "name": "KODEX 미국AI광통신네트워크",
-      "price": 11690
+      "price": 11630
     },
     {
       "code": "0118S0",
       "name": "SOL 미국넥스트테크TOP10액티브",
-      "price": 11120
+      "price": 11110
     }
   ]
 }
